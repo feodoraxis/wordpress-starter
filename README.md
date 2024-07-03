@@ -4,7 +4,7 @@
 
 Переименуйте ее в файле style.css, а также выполните следующую команду для установки Carbon Fields:
 
-`composer install`
+`composer require htmlburger/carbon-fields`
 
 При разработке рекомендуется соблюдать PHP Coding standarts от разработчиков WordPress - https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/
 
