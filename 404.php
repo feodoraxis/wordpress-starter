@@ -1,8 +1,6 @@
-<?php
-get_header();
-?>
+<?php get_header(); ?>
 
-Error 404
+    Error 404
 
 <?php
 get_footer();

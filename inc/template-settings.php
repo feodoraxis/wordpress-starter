@@ -1,17 +1,18 @@
 <?php
+
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
 
-add_theme_support( 'title-tag'       );
+add_theme_support( 'title-tag' );
 add_theme_support( 'post-thumbnails' );
-add_theme_support( 'search-form'     );
-add_theme_support( 'gallery'         );
-add_theme_support( 'caption'         );
-add_theme_support( 'widgets'         );
+add_theme_support( 'search-form' );
+add_theme_support( 'gallery' );
+add_theme_support( 'caption' );
+add_theme_support( 'widgets' );
 
-register_nav_menus( Array(
-    'main-menu' => "Главное меню",
+register_nav_menus( array(
+	'main-menu' => "Главное меню",
 ) );
 
 /*

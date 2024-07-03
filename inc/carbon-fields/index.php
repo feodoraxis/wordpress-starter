@@ -25,5 +25,5 @@ if ( file_exists( __DIR__ . "/blocks/index.php" ) ) {
 }
 
 if ( file_exists( __DIR__ . "/widgets/index.php" ) ) {
-    require_once __DIR__ . "/widgets/index.php";
+	require_once __DIR__ . "/widgets/index.php";
 }

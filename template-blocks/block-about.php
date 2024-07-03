@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
 
 /**
@@ -10,4 +10,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 
-<?php d($args); ?>
+<?php d( $args ); ?>

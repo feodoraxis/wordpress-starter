@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
 
 feodoraxis_autoloader( "/inc/carbon-fields/fields/", "fields" );

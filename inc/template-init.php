@@ -3,7 +3,7 @@
 namespace Feodoraxis;
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
 
 new Ajax();
