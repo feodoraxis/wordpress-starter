@@ -76,42 +76,6 @@ function debug( mixed $arr ):void {
 	fclose( $f );
 }
 
-function feodoraxis_log( string $name, string $request, $data ):void {
-	if ( isset( $_SERVER['HTTP_HOST'] ) && strripos( $_SERVER['HTTP_HOST'], 'rugby.loc' ) ) {
-		return;
-	}
-
-	$db_logs = new wpdb( 'user_rugby_logs', '-1hHc|BYe-E:WzT{', 'user_rugby_logs', 'localhost' );
-
-	$db_logs->insert( 'rugby_ru', [
-			'name'    => $name,
-			'request' => $request,
-			'file'    => __FILE__,
-			'data'    => $data,
-		], [
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-		] );
-	//	$content = $name . "\n\r";
-	//	$content .= "Запрос: " . $request . "\n\r";
-	//	$content .= "Date: " . date( "Y-m-d H:i:s" ) . "\n\r";
-	//	$content .= "File: " . __FILE__ . "\n\r";
-	//	$content .= $data . "\n\r\n\r---------------------------------------";
-	//
-	//	$file_name = "mtg_log_" . date( "Y-m-d H:i:s" ) . '.txt';
-	//	$file_dir = '/home/user/web/new.rugby.ru/mtg_logs';//$_SERVER["DOCUMENT_ROOT"] . "/../mtg_logs";
-	//	if ( ! is_dir( $file_dir ) ) {
-	//		return;
-	//	}
-	//
-	//	file_put_contents( $file_dir . "/" . $file_name, print_r( $content, true ) );
-	//	$f = fopen( $_SERVER["DOCUMENT_ROOT"] . "/../mtg_logs/{$file_name}", "a+" );
-	//	fwrite( $f, print_r( $content, true ) );
-	//	fclose( $f );
-}
-
 /**
  * @param $number
  * @param $after
@@ -371,9 +335,7 @@ function feodoraxis_autoloader( string $dir_name, string $file_prefix ):void {
 	$files = scandir( get_template_directory() . $dir_name );
 
 	foreach ( $files as $file ) {
-		if ( strripos( $file, $file_prefix . '-' ) > - 1 && strripos( $file,
-				'.php' ) && file_exists( get_template_directory() . $dir_name . $file )
-		) {
+		if ( strripos( $file, $file_prefix . '-' ) > - 1 && strripos( $file, '.php' ) && file_exists( get_template_directory() . $dir_name . $file ) ) {
 			require_once get_template_directory() . $dir_name . $file;
 		}
 	}
