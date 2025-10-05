@@ -1,15 +1,19 @@
-# WordPress Starter
+# WordPress Theme Starter
 
-Это тема-стартер для разработки новой темы WordPress.
+Это тема-стартер для разработки темы WordPress.
 
-Переименуйте ее в файле style.css, а также выполните следующую команду для установки Carbon Fields:
+Переименуйте ее в файле style.css и начинайте разработку.
 
-`composer require htmlburger/carbon-fields`
-
-При разработке рекомендуется соблюдать PHP Coding standarts от разработчиков WordPress - https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/
+При разработке рекомендуется соблюдать PHP Coding Standarts от разработчиков WordPress - https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/
 
 Если по каким-либо причинам этот стандарт не подходит - используйте другой. Главное - используйте хоть какой-то стандарт написания кода. Для PHP это может быть, например, PSR-12.
 
-Из личного, я предпочитаю использовать квадратные скобки для массива, вместо полного написания array(). Просто так удобней. Но это на ваше усмотрение.
+Для создания удобных мета-полей рекомендую использовать Carbon Fields:
+`composer require htmlburger/carbon-fields`
 
-Если вы пишете в определенном стиле - то пишите на нем всюду в рамках проекта.
+Рекомендую установить его как MU-плагин для простого обновления.
+
+О том, как пользоваться Carbon Fields у меня есть статья на сайте:
+`https://feodoraxis.ru/wordpress/carbon-fields-besplatny-analog-acf.html`
+
+Но также рекомендую изучить официальную документацию. Там информации намного больше.

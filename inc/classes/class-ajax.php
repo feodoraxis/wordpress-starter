@@ -1,55 +1,34 @@
 <?php
 
+/**
+ * Абстрактный класс для Ajax-запросов.
+ *
+ * Создайте дочерний от этого класс в этой папке с постфиксом Ajax,
+ * укажите в нём константу ACTION_NAME с названием экшена ajax-запроса
+ * и опишите функцию action - которая и будет исполнена при обращении по ajax
+ */
+
 namespace Feodoraxis;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Ajax {
+abstract class Ajax {
 
-	public function __construct() {
-		add_action( 'wp_ajax_' . 'recall_form', array( $this, 'recall_form' ) );
-		add_action( 'wp_ajax_nopriv_' . 'recall_form', array( $this, 'recall_form' ) );
-	}
-
-	public function recall_form() {
-		$this->is_ajax();
-
-		$name  = sanitize_text_field( $_POST['name'] );
-		$email = sanitize_text_field( $_POST['email'] );
-		$phone = sanitize_text_field( $_POST['phone'] );
-
-		$mail_theme = "Сообщение из формы заявок на тест драйв";
-		$email_to   = carbon_get_theme_option( "option-email-recall" );
-
-		$headers = "MIME-Version: 1.0\r\n";
-		$headers .= "Content-type: text/html; charset=utf-8\r\n";
-		$headers .= "From: boot@" . $_SERVER["HTTP_HOST"] . "\r\n";
-
-		$multipart = create_message(
-			$mail_theme,
-			[
-				"Имя"     => $name,
-				"E-mail"  => $email,
-				"Телефон" => $phone,
-			]
-		);
-
-		if ( wp_mail( $email_to, $mail_theme, $multipart, $headers ) ) {
-			wp_send_json_success( [
-				"message" => "success",
-			] );
+	public function __construct( array $actions = [ 'wp_ajax', 'wp_ajax_nopriv' ] ) {
+		if ( in_array( 'wp_ajax', $actions ) ) {
+			add_action( 'wp_ajax_' . static::ACTION_NAME, [ $this, 'action' ] );
 		}
 
-		wp_send_json_error( [
-			"message" => "error",
-		] );
+		if ( in_array( 'wp_ajax_nopriv', $actions ) ) {
+			add_action( 'wp_ajax_nopriv_' . static::ACTION_NAME, [ $this, 'action' ] );
+		}
 	}
 
-	public function is_ajax():void {
-		if ( $_SERVER['REQUEST_METHOD'] != 'POST' || ! wp_doing_ajax() ) {
-			wp_send_json_error();
-		}
+	abstract public function action():void;
+
+	public function is_ajax():bool {
+		return $_SERVER['REQUEST_METHOD'] === 'POST' && wp_doing_ajax();
 	}
 }

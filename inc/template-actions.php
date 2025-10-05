@@ -1,17 +1,25 @@
 <?php
 
+/**
+ * В этом файле создаём функции-экшены, которые добавляются в хуки/фильтры из файла template-hooks.php
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * Hook: script_loader_tag
+ * Включает отображение ошибок на сайте, когда константа WP_DEBUG_DISPLAY_ALL === true, а пользователь -- авторизован
+ *
+ * Hook: init - 10
+ *
+ * @return void
  */
-function add_defer_tag_script( $tag, $handle, $source ) {
-	$path = parse_url( $_SERVER['REQUEST_URI'] );
-	if ( strripos( $path['path'], 'wp-admin/' ) ) {
-		return $tag;
+function show_errors():void {
+	if ( ! is_user_logged_in() || ! defined( "WP_DEBUG_DISPLAY_ALL" ) || ( defined( "WP_DEBUG_DISPLAY_ALL" ) && WP_DEBUG_DISPLAY_ALL === false ) ) {
+		return;
 	}
 
-	return str_replace( "'>", "' defer>", $tag );
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
 }

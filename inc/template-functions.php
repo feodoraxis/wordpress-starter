@@ -1,12 +1,17 @@
 <?php
 
+/**
+ * Все функции, которые нужны в теме
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * @param $arr
- * @param  bool  $is_hide
+ * Отображение содержимого переменных в удобном виде
+ *
+ * @param  $arr
  */
 function d( ...$arr ) {
 	echo '<pre style="color: red;background: yellow;">';
@@ -25,49 +30,9 @@ function d( ...$arr ) {
 }
 
 /**
- * Подключение стилей и скриптов из приложения на React.js на базе его manifest.json
- * Необходим именно такой способ, т.к. при каждой сборке react.js создает новые файлы css и js с новыми названиями,
- * которые фиксируются в manifest.json
+ * Запись данных переменной $arr в файл debug.txt в корне сайта.
+ * Бывает удобно, когда нужно увидеть результат фонового исполнения скрипта
  *
- * @param  string  $manifest_directory  use get_template_directory()
- * @param  string  $manifest_file_name
- * @param  string  $enqueue_name
- */
-function enqueue_from_reactjs_manifest(
-	string $manifest_directory,
-	string $manifest_file_name,
-	string $enqueue_name = 'tournament-table'
-):void {
-	$manifest_link = $manifest_directory . $manifest_file_name;
-
-	$manifest = file_get_contents( $manifest_link );
-	if ( $manifest === false ) {
-		return;
-	}
-
-	$manifest = json_decode( $manifest, true );
-	if ( ! isset( $manifest['entrypoints'] ) || empty( $manifest['entrypoints'] ) || ! is_array( $manifest['entrypoints'] ) ) {
-		return;
-	}
-
-	foreach ( $manifest['entrypoints'] as $entrypoint ) {
-		if ( strripos( $entrypoint, '.css' ) ) {
-			wp_enqueue_style( $enqueue_name,
-				$manifest_directory . $entrypoint,
-				array(),
-				'1.0',
-				false );
-		} elseif ( strripos( $entrypoint, '.js' ) ) {
-			wp_enqueue_script( $enqueue_name,
-				$manifest_directory . $entrypoint,
-				array(),
-				'1.0',
-				false );
-		}
-	}
-}
-
-/**
  * @param  mixed  $arr
  */
 function debug( mixed $arr ):void {
@@ -77,20 +42,24 @@ function debug( mixed $arr ):void {
 }
 
 /**
- * @param $number
- * @param $after
+ * Вывод слова во множественном числе, в зависимости от переданной цифры
+ *
+ * @param  int    $number
+ * @param  array  $after
  *
  * @return string
  */
-function plural_format_word( $number, $after ):string {
+function plural_format_word( int $number, array $after ):string {
 	$cases = [ 2, 0, 1, 1, 1, 2 ];
 
 	return $number . ' ' . $after[ ( $number % 100 > 4 && $number % 100 < 20 ) ? 2 : $cases[ min( $number % 10, 5 ) ] ];
 }
 
 /**
- * @param  string  $date  - use international format
- * @param  string  $date_format  - use needle format. You can use it like in function date()
+ * Изменить формат даты
+ *
+ * @param  string  $date         - указываем международный формат
+ * @param  string  $date_format  - указываем формат, который хотим получить. Принимает тоже самое, что функция date()
  *
  * @return string
  */
@@ -104,14 +73,39 @@ function change_date_format( string $date, string $date_format ):string {
 	return date( $date_format, $_date );
 }
 
-function calculate_age( $date_birthday ) {
-	$date     = new DateTime( $date_birthday );
-	$now      = new DateTime();
-	$interval = $now->diff( $date );
+/**
+ * Подсчёт количества лет с даты рождения до текущей, либо указанной даты
+ *
+ * @param  string  $date_birthday - день рождения
+ * @param  string  $now - дата, на момент которой нужно получить количество лет
+ *
+ * @return null|int
+ */
+function calculate_age( string $date_birthday, string $now = '' ):?int {
+	try {
+		if ( $now === '' ) {
+			$now = new DateTime();
+		} else {
+			$now = new DateTime( $now );
+		}
 
-	return $interval->y;
+		$date     = new DateTime( $date_birthday );
+		$interval = $now->diff( $date );
+
+		return $interval->y;
+	} catch ( \Exception $e ) {
+		return null;
+	}
 }
 
+/**
+ * Получить дату в российском формате
+ *
+ * @param  string  $date - дата в международном формате
+ * @param  bool    $add_year - указать год в конце или нет
+ *
+ * @return string
+ */
 function get_russian_date_format( string $date, bool $add_year = false ):string {
 	if ( empty( $date ) ) {
 		return '';
@@ -135,21 +129,29 @@ function get_russian_date_format( string $date, bool $add_year = false ):string 
 		12 => 'декабря',
 	};
 
-	if ( $add_year === true || date( "Y" ) > date( "Y", $date_unix ) ) {
+	if ( $add_year === true ) {
 		$output .= ' ' . date( "Y", $date_unix );
 	}
 
 	return $output;
 }
 
-function translit( $s ):string {
+/**
+ * Транслитерация строки из кириллицы в латиницу
+ *
+ * @param  string  $s
+ *
+ * @return string
+ */
+function translit( string $s ):string {
 	$s = (string) $s;
 	$s = strip_tags( $s );
-	$s = str_replace( array( "\n", "\r" ), " ", $s );
+	$s = str_replace( [ "\n", "\r" ], " ", $s );
 	$s = preg_replace( "/\s+/", ' ', $s );
 	$s = trim( $s );
-	$s = function_exists( 'mb_strtolower' ) ? mb_strtolower( $s ) : strtolower( $s );
-	$s = strtr( $s, array(
+	$s = function_exists( 'mb_strtolower' ) ? mb_strtolower( $s )
+		: strtolower( $s );
+	$s = strtr( $s, [
 		'а' => 'a',
 		'б' => 'b',
 		'в' => 'v',
@@ -183,7 +185,7 @@ function translit( $s ):string {
 		'я' => 'ya',
 		'ъ' => '',
 		'ь' => '',
-	) );
+	] );
 	$s = preg_replace( "/[^0-9a-z-_ ]/i", "", $s );
 	$s = str_replace( " ", "-", $s );
 
@@ -191,71 +193,23 @@ function translit( $s ):string {
 }
 
 /**
- * @param $title
- * @param $data
+ * Функция для рендеринга хлебных крошек
  *
- * @return string
- */
-function create_message( $title, $data ):string {
-	$time = date( 'd.m.Y в H:i' );
-
-	$message = "
-            <!doctype html>
-                <html>
-                    <head>
-                        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-                        <title>{$title}</title>
-                        <style>
-                            div, p, span, strong, b, em, i, a, li, td, th {
-                                -webkit-text-size-adjust: none;
-                            }
-                            td, th{
-                            	vertical-align:middle
-                            }
-                        </style>
-                    </head>
-                    
-                    <body>
-                        
-                        <table width='500' cellspacing='0' cellpadding='5' border='1' bordercolor='1' style='border:solid 1px #000;border-collapse:collapse;'>
-                            <caption align='center' bgcolor='#fafafa' border='1' bordercolor='1' style='border:solid 1px #000;border-collapse:collapse;background:#dededd;padding:10px 0'><b>{$title}</b></caption>";
-
-	foreach ( $data as $key => $val ) {
-		if ( $val != '' ) {
-			$message .= '<tr><td bgcolor="#fbfbfb" style="background:#efeeee">' . $key . ':</td><td>' . $val . '</td>';
-		}
-	}
-
-	$ip      = $_SERVER['REMOTE_ADDR'];
-	$message .= "<tr><td bgcolor='#fbfbfb' style='background:#fbfbfb'>Дата:</td><td>{$time}</td></tr><tr><td bgcolor='#fbfbfb' style='background:#fbfbfb'>IP:</td><td>{$ip}</td></tr>";
-
-	$message .= "</table></body></html>";
-
-	return $message;
-}
-
-/**
- * @param  array  $items  = array(
- *                              array(
- *                                  'name' => 'Front page',
- *                                  'link' => '/',
- *                              ),
- *                              array(
- *                                  'name' => 'News',
- *                              ),
- *                          )
- * @param  bool  $to_return
+ * @param  array{
+ *     name:string,
+ *     link:string
+ * }[]            $items
+ * @param  bool   $to_return
+ * @param  array  $classes
  *
  * @return string|void
  */
-function breadcrumbs_render( array $items, bool $to_return = false, array $classes = array() ) {
+function breadcrumbs_render( array $items, bool $to_return = false, array $classes = [] ) {
 	if ( empty( $items ) ) {
 		return;
 	}
 
-	$classes = implode( ' ',
-		array_merge( array( 'breadcrumps' ),
-			$classes ) );
+	$classes = implode( ' ', array_merge( [ 'breadcrumps' ], $classes ) );
 
 	$output   = '<ol class="' . $classes . '" itemscope itemtype="http://schema.org/BreadcrumbList">';
 	$position = 1;
@@ -271,6 +225,7 @@ function breadcrumbs_render( array $items, bool $to_return = false, array $class
 			$output .= "<span itemprop=\"name\">{$item['name']}</span>";
 			$output .= "<meta itemprop=\"position\" content=\"" . $position . "\" />";
 		}
+
 		$position ++;
 		$output .= '</li>';
 	}
@@ -284,7 +239,12 @@ function breadcrumbs_render( array $items, bool $to_return = false, array $class
 	echo $output;
 }
 
-function wp_corenavi() {
+/**
+ * Отображение пагинации на странице записей или архива
+ *
+ * @return void
+ */
+function wp_corenavi():void {
 	global $wp_query, $wp_rewrite;
 
 	$pages = '';
@@ -317,17 +277,27 @@ function wp_corenavi() {
 	}
 }
 
-function link2hyperlink( string $link ):string {
-	$link = str_replace( array(
+/**
+ * Конвертация ссылки в единый формат
+ *
+ * @param  string  $link
+ * @param  string  $format
+ *
+ * @return string
+ */
+function link2hyperlink( string $link, string $format = 'https' ):string {
+	$link = str_replace( [
 		'//',
 		'http:',
 		'https:',
-	), '', $link );
+	], '', $link );
 
-	return 'https://' . $link;
+	return ( $format === 'https' ? 'https' : 'http' ) . '://' . $link;
 }
 
 /**
+ * Функция автозагрузки файлов из определенной директории
+ *
  * @param  string  $dir_name
  * @param  string  $file_prefix
  */

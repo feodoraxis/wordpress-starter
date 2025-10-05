@@ -1,10 +1,16 @@
 <?php
 
+/**
+ * В этом файле добавляем хуки к экшенам, указанным в файле template-actions.php
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * @see add_defer_tag_script
+ * Включает отображение ошибок на сайте, когда константа WP_DEBUG_DISPLAY_ALL === true, а пользователь -- авторизован
+ *
+ * @see show_errors - 10
  */
-add_filter( 'script_loader_tag', 'add_defer_tag_script', 10, 3 );
+add_action( 'init', 'show_errors', 10 );

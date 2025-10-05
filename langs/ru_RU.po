@@ -14,10 +14,10 @@ msgstr ""
 "Last-Translator: \n"
 "Language: ru_RU\n"
 
-#: inc/template-settings.php:5
+#: inc/template-settings.php:19
 msgid "Main menu"
 msgstr "Главное меню"
 
-#: 404.php:3
-msgid "Error 404 - page not fount"
+#: 404.php:4
+msgid "Error 404 - page not found"
 msgstr "Ошибка 404 - страница не найдена"
