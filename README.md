@@ -13,7 +13,6 @@
 
 Рекомендую установить его как MU-плагин для простого обновления.
 
-О том, как пользоваться Carbon Fields у меня есть статья на сайте:
-`https://feodoraxis.ru/wordpress/carbon-fields-besplatny-analog-acf.html`
+О том, как пользоваться Carbon Fields у меня есть статья на сайте - https://feodoraxis.ru/wordpress/carbon-fields-besplatny-analog-acf.html
 
 Но также рекомендую изучить официальную документацию. Там информации намного больше.
